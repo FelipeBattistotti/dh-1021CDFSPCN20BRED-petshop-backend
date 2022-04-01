@@ -14,4 +14,9 @@ module.exports = (app) => {
     app.get('/servico', app.api.servico.getServico)
     app.post('/servico', app.api.servico.createServico)
     app.delete('/servico/:id', app.api.servico.deleteServico)
+
+    app.get('/usuario', app.api.usuario.getUsuario)
+    app.post('/usuario', app.api.usuario.createUsuario)
+    app.delete('/usuario/:id', app.api.usuario.deleteUsuario)
+    app.post('/login', app.api.usuario.login)
 }
