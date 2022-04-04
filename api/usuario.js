@@ -76,9 +76,9 @@ module.exports = (app) => {
     }
 
     return {
-        getUsuario,
-        createUsuario,
-        deleteUsuario,
-        login
+      getUsuario,
+      createUsuario,
+      deleteUsuario,
+      login
     }
 }
