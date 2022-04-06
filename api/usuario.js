@@ -1,8 +1,11 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const {
   Usuario
 } = require('../models')
+
+const { secret } = require('../utils')
 
 module.exports = (app) => {
     const getUsuario = async (req, res) => {
@@ -57,22 +60,12 @@ module.exports = (app) => {
     }
 
     const login = async (req, res) => {
-      const usuario = {
-          email: req.body.email,
-          senha: bcrypt.hashSync(req.body.senha, 10)
-      }
+      const user = await Usuario.findOne({ where: { email: req.body.email } })
 
-      try {
-          res.status(201).json({
-              msg: 'Sucesso!'
-          })
-      } catch (err) {
-          console.log(err)
-          res.status(400).json({
-              error: true,
-              ...err
-          })
-      }
+      if (user && bcrypt.compareSync(req.body.senha, user.senha)) {
+          const token = jwt.sign({ id: user.id_usuario, email: user.email }, secret)
+          res.status(200).json({ token })
+      } else res.status(400).json('Usuário ou Senha incorretos!')
     }
 
     return {
