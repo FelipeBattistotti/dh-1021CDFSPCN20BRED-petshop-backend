@@ -1,9 +1,13 @@
+const jwt = require('jsonwebtoken')
+
 const {
     Cuidador,
     Agendamento,
     Bixo,
     Servico
 } = require('../models')
+const { secret } = require('../utils')
+
 module.exports = (app) => {
     const getCuidador = async (req, res) => {
         try {
@@ -18,20 +22,27 @@ module.exports = (app) => {
     }
 
     const createCuidador = async (req, res) => {
-        const cuidador = req.body
-        console.log(req.body)
-        try {
-            await Cuidador.create(cuidador)
-            res.status(201).json({
-                msg: 'Sucesso!'
-            })
-        } catch (err) {
-            console.log(err)
-            res.status(400).json({
-                error: true,
-                ...err
-            })
-        }
+        if (req.headers && req.headers.authorization) {
+            try {
+                jwt.verify(req.headers.authorization, secret)
+                
+                const cuidador = req.body
+                try {
+                    await Cuidador.create(cuidador)
+                    res.status(201).json({
+                        msg: 'Sucesso!'
+                    })
+                } catch (err) {
+                    console.log(err)
+                    res.status(400).json({
+                        error: true,
+                        ...err
+                    })
+                }
+            } catch (error) {
+                res.status(401).json(error)
+            }
+        } else res.status(401).json('Usuário não autenticado!')
     }
 
     const deleteCuidador = async (req, res) => {
