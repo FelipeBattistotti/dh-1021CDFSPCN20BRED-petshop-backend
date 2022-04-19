@@ -1,6 +1,8 @@
+const { gateKeeper } = require('../middlewares')
+
 module.exports = (app) => {
     app.get('/cuidador', app.api.cuidador.getCuidador)
-    app.post('/cuidador', app.api.cuidador.createCuidador)
+    app.post('/cuidador', gateKeeper, app.api.cuidador.createCuidador)
     app.delete('/cuidador/:id', app.api.cuidador.deleteCuidador)
 
     app.get('/bixo', app.api.bixo.getBixo)
